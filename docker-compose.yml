@@ -1,17 +1,40 @@
 version: '3.5'
 
+# настройки синхронизации папок
+x-nginx-volumes: &x-nginx-volumes
+  - ./container/nginx/backup:/var/backup
+  # - ./container/nginx/config/nginx.conf:/etc/nginx/nginx.conf:ro
+  - ./container/nginx/config/conf.d:/etc/nginx/conf.d:ro
+  # - ./container/nginx/log:/var/log
+  - ./container/web_site_name_1/data:/var/www/web_site_name_1:ro # sync site 1
+  - ./container/web_site_name_2/data:/var/www/web_site_name_2:ro # sync site 2
 
 # sites
 x-web-backend-volumes: &x-backend-volumes
   - ./container/web_backend/data:/var/www/web_backend
   - ./container/web_backend/config/etc-apache2:/etc/apache2:ro
   - ./container/web_backend/config/php/php.ini-production:/usr/local/etc/php/php.ini:ro
-  
+
 x-web-frontend-volumes: &x-frontend-volumes
   - ./container/web_frontend/data:/var/www/web_frontend
 
 
 services:
+  # nginx
+  nginx:
+    container_name: nginx
+    image: nginx:1.19
+    links:
+      - web_site_name_1:web_site_name_1
+      - web_site_name_2:web_site_name_2
+    ports:
+      - ${DOCKER__NGINX__PORT80_EXPOSE}:80
+      - ${DOCKER__NGINX__PORT443_EXPOSE}:443
+    volumes:
+      *x-nginx-volumes
+    networks:
+      - docker-network
+      -
   # database
 
   # service
@@ -32,7 +55,7 @@ services:
       - '80:80'
     networks:
       - docker-network
-      
+
   web_frontend:
     container_name: web_frontend
     build:
