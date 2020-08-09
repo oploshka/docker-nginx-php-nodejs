@@ -6,8 +6,8 @@ x-nginx-volumes: &x-nginx-volumes
   # - ./container/nginx/config/nginx.conf:/etc/nginx/nginx.conf:ro
   - ./container/nginx/config/conf.d:/etc/nginx/conf.d:ro
   # - ./container/nginx/log:/var/log
-  - ./container/web_site_name_1/data:/var/www/web_site_name_1:ro # sync site 1
-  - ./container/web_site_name_2/data:/var/www/web_site_name_2:ro # sync site 2
+  - ./container/web_backend/data:/var/www/web_backend:ro
+  - ./container/web_frontend/data:/var/www/web_frontend:ro
 
 # sites
 x-web-backend-volumes: &x-backend-volumes
@@ -25,8 +25,8 @@ services:
     container_name: nginx
     image: nginx:1.19
     links:
-      - web_site_name_1:web_site_name_1
-      - web_site_name_2:web_site_name_2
+      - web_backend:web_backend
+      - web_frontend:web_frontend
     ports:
       - ${DOCKER__NGINX__PORT80_EXPOSE}:80
       - ${DOCKER__NGINX__PORT443_EXPOSE}:443
