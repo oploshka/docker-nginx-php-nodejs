@@ -1,0 +1,55 @@
+version: '3.5'
+
+
+# sites
+x-web-backend-volumes: &x-backend-volumes
+  - ./container/web_backend/data:/var/www/web_backend
+  - ./container/web_backend/config/etc-apache2:/etc/apache2:ro
+  - ./container/web_backend/config/php/php.ini-production:/usr/local/etc/php/php.ini:ro
+  
+x-web-frontend-volumes: &x-frontend-volumes
+  - ./container/web_frontend/data:/var/www/web_frontend
+
+
+services:
+  # database
+
+  # service
+
+  # web
+  web_backend:
+    container_name: web_backend
+    build:
+      context: ./dockerfiles
+      dockerfile: php7.4-apache-drupal8.dockerfile
+    # image: web_backend
+    #environment:
+    #  <<: *x-api-environment # поправить на явные переменные окружения
+    working_dir: /var/www/web_backend/html/web
+    volumes:
+      *x-backend-volumes
+    ports:
+      - '80:80'
+    networks:
+      - docker-network
+      
+  web_frontend:
+    container_name: web_frontend
+    build:
+      context: ./dockerfiles
+      dockerfile: vue.dockerfile
+    # image: web_frontend
+    #environment:
+    #  <<: *x-api-environment # поправить на явные переменные окружения
+    working_dir: /var/www/web_frontend/html/web
+    volumes:
+      *x-frontend-volumes
+    ports:
+      - '80:80'
+    networks:
+      - docker-network
+
+#Docker Networks
+networks:
+  docker-network:
+    driver: bridge
