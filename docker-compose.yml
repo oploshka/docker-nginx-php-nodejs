@@ -34,7 +34,6 @@ services:
       *x-nginx-volumes
     networks:
       - docker-network
-      -
   # database
 
   # service
@@ -43,7 +42,7 @@ services:
   web_backend:
     container_name: web_backend
     build:
-      context: ./dockerfiles
+      context: ./dockerfiles/php
       dockerfile: php7.4-apache-drupal8.dockerfile
     # image: web_backend
     #environment:
@@ -51,15 +50,15 @@ services:
     working_dir: /var/www/web_backend/html/web
     volumes:
       *x-backend-volumes
-    ports:
-      - '80:80'
+    #ports:
+    #  - '80:80'
     networks:
       - docker-network
 
   web_frontend:
     container_name: web_frontend
     build:
-      context: ./dockerfiles
+      context: ./dockerfiles/vue
       dockerfile: vue.dockerfile
     # image: web_frontend
     #environment:
@@ -67,8 +66,8 @@ services:
     working_dir: /var/www/web_frontend/html/web
     volumes:
       *x-frontend-volumes
-    ports:
-      - '80:80'
+    #ports:
+    #  - '80:80'
     networks:
       - docker-network
 

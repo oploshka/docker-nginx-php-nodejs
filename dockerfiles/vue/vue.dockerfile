@@ -1,4 +1,4 @@
-FROM node:12
+FROM node:14
 
 RUN npm i -g @vue/cli
 # RUN npm install @vue/cli@4.4.6 -g
@@ -7,4 +7,5 @@ RUN npm i -g @vue/cli
 # vue create app-name
 #
 
-CMD [ "npm", "run", "serve" ]
+CMD [ "bash" ]
+#CMD [ "npm", "run", "serve" ]
